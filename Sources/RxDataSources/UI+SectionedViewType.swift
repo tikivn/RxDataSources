@@ -56,11 +56,13 @@ extension UITableView : SectionedViewType {
     public func reloadSections(_ sections: [Int], animationStyle: UITableViewRowAnimation) {
         self.reloadSections(indexSet(sections), with: animationStyle)
     }
-
-  public func performBatchUpdates<S>(_ changes: Changeset<S>, animationConfiguration: AnimationConfiguration) {
-        self.beginUpdates()
-        _performBatchUpdates(self, changes: changes, animationConfiguration: animationConfiguration)
-        self.endUpdates()
+    
+    public func performBatchUpdates<S>(_ changes: Changeset<S>, animationConfiguration: AnimationConfiguration) {
+        UIView.performWithoutAnimation {
+            self.beginUpdates()
+            _performBatchUpdates(self, changes: changes, animationConfiguration: animationConfiguration)
+            self.endUpdates()
+        }
     }
 }
 
