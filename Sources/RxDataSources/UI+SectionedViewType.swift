@@ -58,10 +58,18 @@ extension UITableView : SectionedViewType {
     }
     
     public func performBatchUpdates<S>(_ changes: Changeset<S>, animationConfiguration: AnimationConfiguration) {
-        UIView.performWithoutAnimation {
+        let performUpdates = {
             self.beginUpdates()
             _performBatchUpdates(self, changes: changes, animationConfiguration: animationConfiguration)
             self.endUpdates()
+        }
+        
+        let config = animationConfiguration
+        switch (config.insertAnimation, config.reloadAnimation, config.deleteAnimation) {
+        case (.none, .none, .none):
+            UIView.performWithoutAnimation(performUpdates)
+        default:
+            performUpdates()
         }
     }
 }
